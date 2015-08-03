@@ -24,11 +24,11 @@ logger = ($log) ->
     return
   
   success = (message, data) ->
-    $log.info('Success: ' + message, data)
+    $log.info 'Success: ' + message, data
     return
   
   warning = (message, data) ->
-    $log.warn('Warning: ' + message, data)
+    $log.warn 'Warning: ' + message, data
 
   service
 
