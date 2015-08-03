@@ -68,7 +68,7 @@ gulp.task 'coffee', ->
 gulp.task 'index', ->
   # Inject in the correct order to startup app
   vendor = gulp.src [paths.vendor+'**/*.js'], read: false
-  blocks = gulp.src ['./www/blocks/router/*.module.js', './www/blocks/router/*.js'], read: false
+  blocks = gulp.src ['./www/blocks/*/*.module.js', './www/blocks/*/*.js'], read: false
   core = gulp.src ['./www/core/core.module.js', './www/core/core.*.js'], read: false
   layout = gulp.src ['./www/layout/layout.module.js', './www/layout/layout.route.js'], read: false
   modules = gulp.src paths.modules, read: false
