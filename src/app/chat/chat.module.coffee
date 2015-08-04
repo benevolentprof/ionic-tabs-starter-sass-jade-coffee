@@ -1,4 +1,3 @@
-do ->
-  'use strict'
+'use strict'
 
-  angular.module 'starter.chat', []
+angular.module 'starter.chat', []

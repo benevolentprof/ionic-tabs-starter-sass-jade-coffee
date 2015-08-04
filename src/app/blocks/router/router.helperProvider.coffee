@@ -3,43 +3,42 @@
 # Code adapted from https://github.com/johnpapa/angular-styleguide#style-y270
 ####
 
-do ->
-  'use strict'
+'use strict'
 
-  routerHelperProvider = ($locationProvider, $stateProvider, $urlRouterProvider) ->
+routerHelperProvider = ($locationProvider, $stateProvider, $urlRouterProvider) ->
 
-    #	$locationProvider.html5Mode({
-    #	  enabled: true,
-    #	  requireBase: false
-    #	});
+  #	$locationProvider.html5Mode({
+  #	  enabled: true,
+  #	  requireBase: false
+  #	});
 
-    RouterHelper = ($state) ->
-      hasOtherwise = false
+  RouterHelper = ($state) ->
+    hasOtherwise = false
 
-      configureStates = (states, otherwisePath) ->
-        states.forEach (state) ->
-          $stateProvider.state state.state, state.config
+    configureStates = (states, otherwisePath) ->
+      states.forEach (state) ->
+        $stateProvider.state state.state, state.config
 
-        if otherwisePath and not hasOtherwise
-          hasOtherwise = true
-          $urlRouterProvider.otherwise otherwisePath
+      if otherwisePath and not hasOtherwise
+        hasOtherwise = true
+        $urlRouterProvider.otherwise otherwisePath
 
-      getStates = ->
-        $state.get()
+    getStates = ->
+      $state.get()
 
-      service =
-        configureStates : configureStates
-        getStates: getStates
+    service =
+      configureStates : configureStates
+      getStates: getStates
 
-      service
+    service
 
-    RouterHelper.$inject = ['$state']
-    @$get = RouterHelper
+  RouterHelper.$inject = ['$state']
+  @$get = RouterHelper
 
-    return
+  return
 
-  routerHelperProvider.$inject = ['$locationProvider', '$stateProvider', '$urlRouterProvider']
+routerHelperProvider.$inject = ['$locationProvider', '$stateProvider', '$urlRouterProvider']
 
-  angular
-    .module 'blocks.router'
-    .provider 'routerHelper', routerHelperProvider
+angular
+  .module 'blocks.router'
+  .provider 'routerHelper', routerHelperProvider

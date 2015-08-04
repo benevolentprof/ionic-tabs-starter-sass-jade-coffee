@@ -6,17 +6,17 @@
 # 'starter.services' is found in services.js
 # 'starter.controllers' is found in controllers.js
 
-do ->
-  'use strict'
 
-  angular
-    .module 'starter', [
-      # Shared modules
-      'ionic'
-      'starter.core'
-      'starter.layout'
-      # Feature areas
-      'starter.account'
-      'starter.chat'
-      'starter.dash'
-    ]
+'use strict'
+
+angular
+  .module 'starter', [
+    # Shared modules
+    'ionic'
+    'starter.core'
+    'starter.layout'
+    # Feature areas
+    'starter.account'
+    'starter.chat'
+    'starter.dash'
+  ]
