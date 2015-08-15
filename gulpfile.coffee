@@ -1,6 +1,7 @@
 argv        = require('yargs').alias('p', 'production').argv
 bower       = require 'bower'
 browserSync = require('browser-sync').create()
+cache       = require 'gulp-cached'
 coffee      = require 'gulp-coffee'
 coffeelint  = require 'gulp-coffeelint'
 coffeStylish= require 'coffeelint-stylish'
@@ -21,9 +22,9 @@ uglify      = require 'gulp-uglify'
 vendor      = require './vendor.json'
 
 paths =
-  sass: ['./src/app/**/*.scss']
-  jade: ['./src/app/**/*.jade']
-  coffee: ['./src/app/**/*.coffee']
+  sass: ['src/app/**/*.scss']
+  jade: ['src/app/**/*.jade']
+  coffee: ['src/app/**/*.coffee']
   img: './src/app/img/**/*.*'
   dest: './www/'
   vendor: './www/lib/'
@@ -47,6 +48,7 @@ gulp.task 'images', ->
 
 gulp.task 'sass', ->
   gulp.src paths.sass
+    .pipe cache 'sass'
     .pipe scssLint customReport: scssStylish
     .pipe sass errLogToConsole: true
     .pipe if argv.production then minifyCss() else gutil.noop()
@@ -54,14 +56,16 @@ gulp.task 'sass', ->
 
 gulp.task 'jade', ->
   gulp.src paths.jade
-    .pipe jade if argv.production then gutil.noop() else pretty:true
+    .pipe cache 'jade'
+    .pipe jade if argv.production then gutil.noop() else pretty: true
     .pipe gulp.dest(paths.dest)
 
 gulp.task 'coffee', ->
   gulp.src paths.coffee
+    .pipe cache 'coffee'
     .pipe coffeelint()
     .pipe coffeelint.reporter coffeStylish
-    .pipe coffee(bare: true).on('error', gutil.log)
+    .pipe coffee().on('error', gutil.log)
     .pipe if argv.production then uglify() else gutil.noop()
     .pipe gulp.dest(paths.dest)
 
@@ -79,11 +83,12 @@ gulp.task 'index', ->
     .pipe gulp.dest paths.dest
 
 gulp.task 'clean', (done) ->
+  cache.caches = {}
   del [paths.dest], done
 
 gulp.task 'sass-watch', ['sass'], -> browserSync.reload()
-gulp.task 'coffee-watch', ['coffee'], -> browserSync.reload()
 gulp.task 'jade-watch', ['jade'], -> browserSync.reload()
+gulp.task 'coffee-watch', ['coffee']
 
 gulp.task 'serve', ->
   browserSync.init
@@ -91,8 +96,12 @@ gulp.task 'serve', ->
       baseDir: 'www'
 
   gulp.watch paths.sass, ['sass-watch']
-  gulp.watch paths.coffee, ['coffee-watch']
   gulp.watch paths.jade, ['jade-watch']
+  gulp.watch paths.coffee, (event) ->
+    if event.type is 'added' or event.type is 'deleted'
+      runSequence 'coffee-watch', 'index'
+    else runSequence 'coffee-watch'
+    browserSync.reload()
 
 gulp.task 'bowerInstall',  ->
   bower.commands.install()
